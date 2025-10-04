@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIT-U Campus Pass - Dashboard</title>
+    <link rel="stylesheet" href="{% static 'campuspass/css/dashboard.css' %}?v={{ now|date:'U' }}">
+</head>
+<body>
+    
+    <div class="sidebar">
+        <div class="school-logo"></div>
+        <div class="sidebar-header">
+            <h2>CIT-U Campus Pass</h2>
+            <p>Visitor Management</p>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active">Dashboard</a>
+            <a href="#" class="nav-item">My Passes</a>
+            <a href="#" class="nav-item">Book a Visit</a>
+            <a href="#" class="nav-item">Visit History</a>
+            <div class="nav-divider"></div>
+            <a href="#" class="nav-item">Notifications</a>
+            <a href="#" class="nav-item">Help & Support</a>
+            <a href="#" class="nav-item">Profile Settings</a>
+            <a href="{% url 'logout' %}" class="nav-item logout-item">Logout</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="search-bar">
+                <input type="text" placeholder="Search passes, visits...">
+            </div>
+            <div class="user-info">
+                <div class="notification-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                {% if notifications|length > 0 %}
+                <span class="notification-badge">{{ notifications|length }}</span>
+                {% endif %}
+            </div>
+                <div class="user-avatar">{{ request.user.first_name|default:"JD"|slice:":2"|upper }}</div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="welcome-section">
+                <h1>Welcome back, {{ request.user.first_name }}!</h1>
+                <p>Here's what's happening with your campus visits today</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">{{ active_visits|length }}</div>
+                    <div class="stat-label">Active Pass</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ upcoming_visits|length }}</div>
+                    <div class="stat-label">Upcoming Visits</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">{{ visits|length }}</div>
+                    <div class="stat-label">Total Visits</div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">My Visit Codes</h3>
+                        <a href="#" class="view-all">View All →</a>
+                    </div>
+
+                    {% for visit in visits %}
+                    <div class="pass-code-item">
+                        <div class="pass-code-info">
+                            <h4>{{ visit.code }}</h4>
+                            <p>{{ visit.date|date:"M d, Y" }} • {{ visit.start_time|time:"H:i" }} - {{ visit.end_time|time:"H:i" }} • {{ visit.purpose }}</p>
+                        </div>
+                        <span class="pass-status status-{{ visit.status|lower }}">{{ visit.status }}</span>
+                    </div>
+                    {% empty %}
+                    <p>No visits found.</p>
+                    {% endfor %}
+
+                    <div style="margin-top: 20px;">
+                        <button class="quick-action-btn">
+                            Book New Visit
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Notifications</h3>
+                    </div>
+
+                    {% for notif in notifications %}
+                    <div class="notification-item">
+                        <div class="notification-icon-small">{{ notif.icon_html|safe }}</div>
+                        <div class="notification-content">
+                            <h4>{{ notif.title }}</h4>
+                            <p>{{ notif.message }}</p>
+                            <div class="notification-time">{{ notif.timestamp|timesince }} ago</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p>No notifications.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
