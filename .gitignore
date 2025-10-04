@@ -1,0 +1,25 @@
+fo/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+__pycache__/
+# Pip logs
+pip-log.txt
+pip-delete-this-directory.txt
+# MyPy/Pyre/Pytype
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+# Jupyter Notebook
+.ipynb_checkpoints
+# Local settings
+local_settings.py
